@@ -1,14 +1,20 @@
 package main
 
 import (
+	"fmt"
 	"time"
-
+  "github.com/kamilGie/snake-golang/snake"
 	"github.com/nsf/termbox-go"
 )
 
 func GameLoop() error {
 	ticker := time.NewTicker(time.Second / 10)
-	for range ticker.C {
+  defer ticker.Stop()
+  i := 0
+  s := snake.Snake{}
+	for { 
+    fmt.Println(i)
+    i++
 		event := termbox.PollEvent()
 		if event.Key == termbox.KeyArrowUp {
 		} else if event.Key == termbox.KeyArrowLeft {
@@ -28,7 +34,7 @@ func main() {
 	}
 	defer termbox.Close()
 
-	GameLoop()
+  err = GameLoop()
 	if err != nil {
 		panic(err)
 	}
