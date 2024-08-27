@@ -13,15 +13,17 @@ type Snake struct {
 	fruit     point.Point
 	areaWidth int
 	areaHight int
+  GameOver bool
 }
 
-func New(areaWidth, areaHight int) Snake {
-	return Snake{
+func New(areaWidth, areaHight int) *Snake {
+	return &Snake{
 		body:      []point.Point{{X: 1, Y: 1}, {X: 1, Y: 2}, {X: 1, Y: 3}},
 		direction: directions{0, 0, 0, 1},
 		fruit:     point.Point{X: 0, Y: 0},
 		areaWidth: areaWidth,
 		areaHight: areaHight,
+    GameOver: false,
 	}
 }
 
@@ -40,8 +42,8 @@ func (s *Snake) isEndGame(newPoint point.Point) bool{
 
 
 // return coordinates of ( body of snake , fruit )
-func (s *Snake) GetState() ([]point.Point, point.Point) {
-	return s.body, s.fruit
+func (s *Snake) GetState() ([]point.Point, point.Point, bool) {
+	return s.body, s.fruit, s.GameOver
 }
 
 // todo this can never end repair it to ending func
@@ -58,7 +60,7 @@ func (s *Snake) newFruitLocation() {
 	}
 }
 
-func (s *Snake) TakeAction(newDirection directions) error {
+func (s *Snake) TakeAction(newDirection directions) {
 	//check is newDirection present and possible
 	for index, value := range newDirection {
 		if value == 1 && s.direction[(index+2)%4] == 0 {
@@ -69,7 +71,8 @@ func (s *Snake) TakeAction(newDirection directions) error {
 
 	newPoint := point.NewPointAtDir(s.body[len(s.body)-1], s.direction)
   if s.isEndGame(newPoint){
-    return nil
+    s.GameOver = true
+    return 
   }
 	s.body = append(s.body, newPoint)
 
@@ -79,5 +82,5 @@ func (s *Snake) TakeAction(newDirection directions) error {
 		s.newFruitLocation()
 	}
 
-	return nil
+	return 
 }
