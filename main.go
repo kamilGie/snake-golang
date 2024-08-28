@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"time"
 
 	"github.com/kamilGie/snake-golang/snake"
@@ -8,7 +9,7 @@ import (
 	"github.com/nsf/termbox-go"
 )
 
-const width, higth = 15, 10
+const ticksPerSecouns, width, higth = 3, 15, 10
 
 func DrawGame(snakeBody []point.Point, fruit point.Point) {
 	termbox.Clear(termbox.ColorDefault, termbox.ColorDefault)
@@ -21,6 +22,11 @@ func DrawGame(snakeBody []point.Point, fruit point.Point) {
 		termbox.SetCell(i, 0, '_', termbox.ColorWhite, termbox.ColorDefault)
 		termbox.SetCell(i, higth+1, 'T', termbox.ColorWhite, termbox.ColorDefault)
 	}
+  scoreText := fmt.Sprint(len(snakeBody) - 3)
+	for index, char := range scoreText {
+		termbox.SetCell(width+index+2, 1, char, termbox.ColorYellow, termbox.ColorDefault)
+	}
+
 	for _, value := range snakeBody {
 		termbox.SetCell(value.X+1, value.Y+1, 'x', termbox.ColorGreen, termbox.ColorBlack)
 	}
@@ -28,7 +34,7 @@ func DrawGame(snakeBody []point.Point, fruit point.Point) {
 	termbox.Flush()
 }
 
-func handleInput(DirChan chan [4]int) {
+func handleInput(DirChan chan [4]int, endgame chan bool) {
 	for {
 		event := termbox.PollEvent()
 		if event.Key == termbox.KeyArrowUp {
@@ -40,13 +46,13 @@ func handleInput(DirChan chan [4]int) {
 		} else if event.Key == termbox.KeyArrowDown {
 			DirChan <- [4]int{0, 0, 1, 0}
 		} else if event.Key == termbox.KeyEsc {
-			return
+			endgame <- true
 		}
 	}
 
 }
 
-func Update(snake *snake.Snake, DirChan chan [4]int) {
+func Update(snake *snake.Snake, DirChan chan [4]int, endGame chan bool) {
 	for {
 		select {
 		case direction := <-DirChan:
@@ -56,21 +62,22 @@ func Update(snake *snake.Snake, DirChan chan [4]int) {
 		}
 		snakeBody, fruit, gameOver := snake.GetState()
 		if gameOver {
+			endGame <- true
 			return
 		}
 		DrawGame(snakeBody, fruit)
-		time.Sleep(time.Second / 3)
+		time.Sleep(time.Second / ticksPerSecouns)
 	}
 }
 
-func GameLoop() error {
+func GameLoop() {
 	snake := snake.New(width, higth)
 	snakeDirectionChanel := make(chan [4]int)
-	go func() {
-		handleInput(snakeDirectionChanel)
-	}()
-	Update(snake, snakeDirectionChanel)
-	return nil
+	endGameChanel := make(chan bool)
+	go handleInput(snakeDirectionChanel, endGameChanel)
+	go Update(snake, snakeDirectionChanel, endGameChanel)
+	<-endGameChanel
+	return
 }
 
 func main() {
@@ -80,9 +87,5 @@ func main() {
 	}
 	defer termbox.Close()
 
-	err = GameLoop()
-	if err != nil {
-		panic(err)
-	}
-
+	GameLoop()
 }
