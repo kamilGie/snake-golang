@@ -8,12 +8,23 @@ import (
 	"github.com/nsf/termbox-go"
 )
 
+const width, higth = 15, 10
+
 func DrawGame(snakeBody []point.Point, fruit point.Point) {
 	termbox.Clear(termbox.ColorDefault, termbox.ColorDefault)
-	termbox.SetCell(fruit.X, fruit.Y, 'f', termbox.ColorBlue, termbox.ColorBlack)
-	for _, value := range snakeBody {
-		termbox.SetCell(value.X, value.Y, 'x', termbox.ColorGreen, termbox.ColorBlack)
+
+	for i := range higth + 1 {
+		termbox.SetCell(0, i, '|', termbox.ColorWhite, termbox.ColorDefault)
+		termbox.SetCell(width+1, i, '|', termbox.ColorWhite, termbox.ColorDefault)
 	}
+	for i := range width + 2 {
+		termbox.SetCell(i, 0, '_', termbox.ColorWhite, termbox.ColorDefault)
+		termbox.SetCell(i, higth+1, 'T', termbox.ColorWhite, termbox.ColorDefault)
+	}
+	for _, value := range snakeBody {
+		termbox.SetCell(value.X+1, value.Y+1, 'x', termbox.ColorGreen, termbox.ColorBlack)
+	}
+	termbox.SetCell(fruit.X+1, fruit.Y+1, 'f', termbox.ColorBlue, termbox.ColorBlack)
 	termbox.Flush()
 }
 
@@ -48,12 +59,12 @@ func Update(snake *snake.Snake, DirChan chan [4]int) {
 			return
 		}
 		DrawGame(snakeBody, fruit)
-		time.Sleep(time.Second)
+		time.Sleep(time.Second / 3)
 	}
 }
 
 func GameLoop() error {
-	snake := snake.New(10, 10)
+	snake := snake.New(width, higth)
 	snakeDirectionChanel := make(chan [4]int)
 	go func() {
 		handleInput(snakeDirectionChanel)
