@@ -7,16 +7,16 @@ import (
 )
 
 func DrawGame(snakeBody []point.Point, fruit point.Point) {
-	termbox.Clear(termbox.ColorDefault, termbox.ColorDefault) // Czyści ekran
+	termbox.Clear(termbox.ColorDefault, termbox.ColorDefault)
 	termbox.SetCell(fruit.X, fruit.Y, 'f', termbox.ColorBlue, termbox.ColorBlack)
 	for _, value := range snakeBody {
-		termbox.SetCell(value.X, value.Y, 'x', termbox.ColorBlue, termbox.ColorBlack)
+		termbox.SetCell(value.X, value.Y, 'x', termbox.ColorGreen, termbox.ColorBlack)
 	}
 	termbox.Flush()
 }
 
 func GameLoop() error {
-	snake := snake.New(10,10)
+	snake := snake.New(10, 10)
 	for {
 		event := termbox.PollEvent()
 		if event.Key == termbox.KeyArrowUp {

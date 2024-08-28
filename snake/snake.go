@@ -1,8 +1,9 @@
 package snake
 
 import (
-	"github.com/kamilGie/snake-golang/snake/point"
 	"math/rand"
+
+	"github.com/kamilGie/snake-golang/snake/point"
 )
 
 type directions [4]int
@@ -13,7 +14,7 @@ type Snake struct {
 	fruit     point.Point
 	areaWidth int
 	areaHight int
-  GameOver bool
+	GameOver  bool
 }
 
 func New(areaWidth, areaHight int) *Snake {
@@ -23,23 +24,22 @@ func New(areaWidth, areaHight int) *Snake {
 		fruit:     point.Point{X: 0, Y: 0},
 		areaWidth: areaWidth,
 		areaHight: areaHight,
-    GameOver: false,
+		GameOver:  false,
 	}
 }
 
-func (s *Snake) isEndGame(newPoint point.Point) bool{
-  if newPoint.X < 0 || newPoint.X >= s.areaWidth || newPoint.Y < 0 || newPoint.Y >= s.areaHight {
-    return true
-  }
+func (s *Snake) isEndGame(newPoint point.Point) bool {
+	if newPoint.X < 0 || newPoint.X >= s.areaWidth || newPoint.Y < 0 || newPoint.Y >= s.areaHight {
+		return true
+	}
 
 	for _, p := range s.body {
 		if p.X == newPoint.X && p.Y == newPoint.Y {
-      return true
+			return true
 		}
 	}
-  return false
+	return false
 }
-
 
 // return coordinates of ( body of snake , fruit )
 func (s *Snake) GetState() ([]point.Point, point.Point, bool) {
@@ -51,13 +51,13 @@ func (s *Snake) newFruitLocation() {
 	randomX := rand.Intn(s.areaWidth)
 	randomY := rand.Intn(s.areaHight)
 	for _, p := range s.body {
-		if p.X == randomY && p.Y == randomY {
+		if p.X == randomX && p.Y == randomY {
 			s.newFruitLocation()
 			return
 		}
-		s.fruit = point.Point{X: randomX, Y: randomY}
-		return
 	}
+	s.fruit = point.Point{X: randomX, Y: randomY}
+	return
 }
 
 func (s *Snake) TakeAction(newDirection directions) {
@@ -70,10 +70,10 @@ func (s *Snake) TakeAction(newDirection directions) {
 	}
 
 	newPoint := point.NewPointAtDir(s.body[len(s.body)-1], s.direction)
-  if s.isEndGame(newPoint){
-    s.GameOver = true
-    return 
-  }
+	if s.isEndGame(newPoint) {
+		s.GameOver = true
+		return
+	}
 	s.body = append(s.body, newPoint)
 
 	if newPoint != s.fruit {
@@ -82,5 +82,5 @@ func (s *Snake) TakeAction(newDirection directions) {
 		s.newFruitLocation()
 	}
 
-	return 
+	return
 }
