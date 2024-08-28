@@ -48,16 +48,23 @@ func (s *Snake) GetState() ([]point.Point, point.Point, bool) {
 
 // todo this can never end repair it to ending func
 func (s *Snake) newFruitLocation() {
-	randomX := rand.Intn(s.areaWidth)
-	randomY := rand.Intn(s.areaHight)
-	for _, p := range s.body {
-		if p.X == randomX && p.Y == randomY {
-			s.newFruitLocation()
-			return
+	for {
+		randomX := rand.Intn(s.areaWidth)
+		randomY := rand.Intn(s.areaHight)
+
+		collision := false
+		for _, p := range s.body {
+			if p.X == randomX && p.Y == randomY {
+				collision = true
+				break
+			}
+		}
+
+		if !collision {
+			s.fruit = point.Point{X: randomX, Y: randomY}
+			break
 		}
 	}
-	s.fruit = point.Point{X: randomX, Y: randomY}
-	return
 }
 
 func (s *Snake) TakeAction(newDirection directions) {
