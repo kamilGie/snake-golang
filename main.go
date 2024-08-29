@@ -9,7 +9,7 @@ import (
 	"github.com/nsf/termbox-go"
 )
 
-const ticksPerSecouns, width, higth = 3, 15, 10
+const ticksPerSecouns, width, higth = 10, 15, 10
 
 func DrawGame(snakeBody []point.Point, fruit point.Point) {
 	termbox.Clear(termbox.ColorDefault, termbox.ColorDefault)
@@ -22,15 +22,18 @@ func DrawGame(snakeBody []point.Point, fruit point.Point) {
 		termbox.SetCell(i, 0, '_', termbox.ColorWhite, termbox.ColorDefault)
 		termbox.SetCell(i, higth+1, 'T', termbox.ColorWhite, termbox.ColorDefault)
 	}
-  scoreText := fmt.Sprint(len(snakeBody) - 3)
+	scoreText := fmt.Sprint(len(snakeBody) - 3)
 	for index, char := range scoreText {
 		termbox.SetCell(width+index+2, 1, char, termbox.ColorYellow, termbox.ColorDefault)
 	}
 
 	for _, value := range snakeBody {
-		termbox.SetCell(value.X+1, value.Y+1, 'x', termbox.ColorGreen, termbox.ColorBlack)
+    termbox.SetCell(value.X+1, value.Y+1, 'x', termbox.ColorGreen, termbox.ColorBlack)
 	}
-	termbox.SetCell(fruit.X+1, fruit.Y+1, 'f', termbox.ColorBlue, termbox.ColorBlack)
+	SnakeHead := snakeBody[len(snakeBody)-1]
+	termbox.SetCell(SnakeHead.X+1, SnakeHead.Y+1, 'x', termbox.ColorLightGreen, termbox.ColorBlack)
+
+  termbox.SetCell(fruit.X+1, fruit.Y+1, 'o', termbox.ColorRed, termbox.ColorDefault)
 	termbox.Flush()
 }
 
