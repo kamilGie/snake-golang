@@ -19,16 +19,16 @@ type Snake struct {
 }
 
 func New(areaWidth, areaHight int) *Snake {
-  newSnake := Snake{
+	newSnake := Snake{
 		body:      []point.Point{{X: 1, Y: 1}, {X: 1, Y: 2}, {X: 1, Y: 3}},
 		direction: directions{0, 0, 0, 1},
 		areaWidth: areaWidth,
 		areaHight: areaHight,
 		GameOver:  false,
 	}
-  newSnake.newFruitLocation()
-  newSnake.head = &newSnake.body[2]
-  return &newSnake
+	newSnake.newFruitLocation()
+	newSnake.head = &newSnake.body[2]
+	return &newSnake
 }
 
 func (s *Snake) isEndGame(newPoint point.Point) bool {
@@ -80,7 +80,7 @@ func (s *Snake) TakeAction(newDirection directions) {
 	}
 
 	newPoint := point.NewPointAtDir(*s.head, s.direction)
-  s.head = &newPoint
+	s.head = &newPoint
 	if s.isEndGame(*s.head) {
 		s.GameOver = true
 		return
