@@ -1,5 +1,10 @@
 # Project: Snake in Go
 
+
+<p align="center">
+  <img width="240" alt="Zrzut ekranu 2024-08-29 o 10 59 26" src="https://github.com/user-attachments/assets/f4f45fd2-0d92-43e0-b3e3-d6ced668058d">
+</p>
+
 ## Project Description
 
 This project is an implementation of the Snake game written in Go. The application is divided into  main  file and packages
